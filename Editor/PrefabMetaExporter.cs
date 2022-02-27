@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using IGG.IT4M;
 using UnityEditor;
 using UnityEngine;
-using PrimitiveMeta = PrefabMetaExporter.PrefabMeta.PrimitiveMeta;
+using PrimitiveMeta = PowerHE.PrefabMetaExporter.PrefabMeta.PrimitiveMeta;
 
 namespace PowerHE
 {
