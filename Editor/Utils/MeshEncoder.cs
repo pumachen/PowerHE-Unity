@@ -22,7 +22,7 @@ namespace PowerHE
 				{
 					c = colors[vtxnum];
 				}
-				sb.AppendLine($"v {-v.x} {-v.y} {v.z} {c.a} {c.a} {c.a}");
+				sb.AppendLine($"v {-v.x} {v.y} {-v.z} {c.a} {c.a} {c.a}");
 			}
 			foreach (Vector3 v in mesh.vertices)
 			{
@@ -31,7 +31,7 @@ namespace PowerHE
 			
 			foreach (Vector3 n in mesh.normals)
 			{
-				sb.AppendLine($"vn {-n.x} {-n.y} {n.z}");
+				sb.AppendLine($"vn {-n.x} {n.y} {-n.z}");
 			}
 			sb.Append("\n");
 
