@@ -1,0 +1,17 @@
+{
+	"name": "com.pum4ch3n.power-he", 
+	"version": "0.0.1", 
+	"displayName": "Power HE", 
+	"description": "Power HE Unity Plugin", 
+	"unity": "2018.1", 
+	"documentationUrl": "", 
+	"changelogUrl": "", 
+	"licenseUrl": "", 
+	"dependencies": {},
+	"keywords": [], 
+	"author": {
+		"name": "PUM4CH3N", 
+		"email": "", 
+		"url": ""
+	}
+}
