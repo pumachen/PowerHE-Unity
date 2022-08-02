@@ -11,13 +11,13 @@ namespace HoudiniWebClient
     {
         ParmTemplate template { get; }
         void GUILayout();
-        string value { get; }
+
+        void RegisterFormData(WWWForm form);
     }
     
     public class FloatParm : IHouParm
     {
         ParmTemplate IHouParm.template => template;
-        string IHouParm.value => JsonConvert.SerializeObject(value);
         public FloatParmTemplate template;
         public float[] value { get; private set; }
 
@@ -38,11 +38,15 @@ namespace HoudiniWebClient
             }
             EditorGUILayout.EndHorizontal();
         }
+
+        public void RegisterFormData(WWWForm form)
+        {
+            form.AddField(template.name, JsonConvert.SerializeObject(value));
+        }
     }
     public class IntParm : IHouParm
     {
         ParmTemplate IHouParm.template => template;
-        string IHouParm.value => JsonConvert.SerializeObject(value);
         public IntParmTemplate template;
         public int[] value { get; private set; }
         public IntParm(IntParmTemplate template)
@@ -50,6 +54,10 @@ namespace HoudiniWebClient
             this.template = template;
             value = new int[template.numComponents];
             Array.Copy(template.defaultValue, value, template.numComponents);
+        }
+        public void RegisterFormData(WWWForm form)
+        {
+            form.AddField(template.name, JsonConvert.SerializeObject(value));
         }
 
         public void GUILayout()
@@ -66,8 +74,9 @@ namespace HoudiniWebClient
     public class StringParm : IHouParm
     {
         ParmTemplate IHouParm.template => template;
-        string IHouParm.value => JsonConvert.SerializeObject(value);
         public StringParmTemplate template;
+
+        private Texture2D texture;
         public string value { get; private set; }
 
         public StringParm(StringParmTemplate template)
@@ -78,7 +87,48 @@ namespace HoudiniWebClient
 
         public void GUILayout()
         {
-            value = EditorGUILayout.TextField(template.label, value);
+            switch (template.stringType)
+            {
+                case StringParmType.FileReference:
+                {
+                    switch (template.fileType)
+                    {
+                        case FileType.Geometry:
+                        case FileType.Fbx:
+                        case FileType.Usd:
+                        {
+                            EditorGUILayout.LabelField("Geometry parameters are not supported");
+                            break;
+                        }
+                        case FileType.Image:
+                        {
+                            texture = EditorGUILayout.ObjectField(template.label, texture, typeof(Texture2D), true) as Texture2D;
+                            value = texture == null ? "" : GUID.Generate().ToString();
+                            break;
+                        }
+                    }
+                    break;
+                }
+                default:
+                {
+                    value = EditorGUILayout.TextField(template.label, value);
+                    break;
+                }
+            }
+        }
+
+        public void RegisterFormData(WWWForm form)
+        {
+            if (template.stringType == StringParmType.FileReference 
+                && template.fileType == FileType.Image 
+                && texture != null)
+            {
+                form.AddBinaryData(template.name, texture.EncodeToPNG(), value);
+            }
+            else
+            {
+                form.AddField(template.name, value);
+            }
         }
     }
 }
